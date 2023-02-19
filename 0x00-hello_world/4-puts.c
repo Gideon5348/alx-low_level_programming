@@ -1,9 +1,8 @@
-#!/bin/bash
 #include <stdio.h>
 /**
- * A program that prints exactly "Programming is like building a multilingual puzzle, followed by a new line.
+ *main - A program that prints a line with puts function
  *
- * Return: Always 0.
+ * Return: 0 (Success)
  */
 int main(void) 
 {
