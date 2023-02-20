@@ -9,10 +9,12 @@ int main(void)
 {
 	char ll;
 
-	for (ll = 'a' <= 'd'; ll = 'f' <= 'p'; ll = 'r' <= 'z'; ll++;)
+	for (ll = 'a'; ll <= 'z'; ll++)
 	{
-		putchar(ll);
+		if (ll != 'e' && ll !='q')
+			putchar(ll);
 	}
+
 	putchar('\n');
 
 	return (0);
