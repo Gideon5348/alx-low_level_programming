@@ -1,8 +1,8 @@
 #include"main.h"
 
 /**
- * main - A program that prints _putchar
- *
+ * main - prints _putchar
+ *is written by Gideon
  * Return: 0
  *
  */
@@ -17,6 +17,5 @@ int main(void)
 	_putchar('a');
 	_putchar('r');
 	_putchar('\n');
-
 	return (0);
 }
