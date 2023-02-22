@@ -13,7 +13,7 @@ void print_alphabet_x10(void)
 	while (i < 10)
 	{
 
-	for ll = 'a'; ll <= 'z'; ll++
+	for ll = 'a'; ll <= 'z'; ll++;
 		_putchar(ll);
 	}
 	_putchar('/n');
