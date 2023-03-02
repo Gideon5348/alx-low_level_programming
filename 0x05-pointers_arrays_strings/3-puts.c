@@ -1,5 +1,8 @@
 #include "main.h"
 
+/*Declare _putchar function*/
+int _putchar(char c);
+
 /**
  * _puts - prints a string, followed by a new line, to stdout
  * @str: string to be printed
