@@ -3,9 +3,9 @@
 
 /**
  * *_strncat - concatenates two strings
- * @src: appends string to dest
- * @dest: returns a pointer to string
- * @n: bytes from src
+ * @src: pointer to the source string
+ * @dest: pointer to the destination string
+ * @n: bytes to be copied
  *
  * Return: Always 0.
  */
