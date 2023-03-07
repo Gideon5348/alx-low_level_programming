@@ -3,6 +3,8 @@
 /**
  * print_chessboard - prints the chessboard
  * @a: 2D character array
+ *
+ * Return: No return value.
  */
 
 int _putchar(char a);
