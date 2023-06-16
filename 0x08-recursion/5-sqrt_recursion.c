@@ -36,7 +36,7 @@ int sqrt_helper(int n, int s, int e)
 
 	if (mid * mid == n)
 		return (mid);
-	else if (s >= e)
+	else if (s > e)
 		return (-1);
 	else if (mid * mid > n)
 		return (sqrt_helper(n, s, mid - 1));
