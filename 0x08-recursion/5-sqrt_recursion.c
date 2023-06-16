@@ -1,6 +1,6 @@
 #include "main.h"
 
-int sqrt_helper(int n, int s, int e);
+int sqrt_helper(int n, int i);
 
 /**
  * _sqrt_recursion -  returns the natural square root of a number.
@@ -14,35 +14,26 @@ int _sqrt_recursion(int n)
 {
 	if (n < 0)
 		return (-1);
-	else if (n == 0 || n == 1)
-		return (n);
-	else
-		return (sqrt_helper(n, 1, n / 2));
+
+	return (sqrt_helper(n, 0));
 }
 
 /**
  * sqrt_helper - recursive helper function to calculate square root.
  * @n: The number to calculate the square root of.
- * @s: The starting point for the search.
- * @e: The ending point for the search.
+ * @i: The current value being checked for square root.
  *
  * Return: the natural square root of a number.
  *  If n does not have a natural square root, the function should return -1
  */
 
-int sqrt_helper(int n, int s, int e)
+int sqrt_helper(int n, int i)
 {
-	int mid;
-
-	if (s > e)
+	if (i * i > n)
 		return (-1);
 
-	mid = (s + e) / 2;
+	if (i * i == n)
+		return (i);
 
-	if (mid * mid == n)
-		return (mid);
-	else if (mid * mid < n)
-		return (sqrt_helper(n, mid + 1, e));
-	else
-		return (sqrt_helper(n, s, mid - 1));
+	return (sqrt_helper(n, i + 1));
 }
