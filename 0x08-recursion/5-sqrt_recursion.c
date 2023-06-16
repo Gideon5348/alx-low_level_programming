@@ -17,7 +17,7 @@ int _sqrt_recursion(int n)
 	else if (n == 0 || n == 1)
 		return (n);
 	else
-		return (sqrt_helper(n, 0, n));
+		return (sqrt_helper(n, 1, n / 2));
 }
 
 /**
@@ -32,14 +32,17 @@ int _sqrt_recursion(int n)
 
 int sqrt_helper(int n, int s, int e)
 {
-	int mid = (s + e) / 2;
+	int mid;
+
+	if (s > e)
+		return (-1);
+
+	mid = (s + e) / 2;
 
 	if (mid * mid == n)
 		return (mid);
-	else if (s > e)
-		return (-1);
-	else if (mid * mid > n)
-		return (sqrt_helper(n, s, mid - 1));
-	else
+	else if (mid * mid < n)
 		return (sqrt_helper(n, mid + 1, e));
+	else
+		return (sqrt_helper(n, s, mid - 1));
 }
