@@ -64,10 +64,16 @@ int main(int argc, char *argv[])
 
 	for (y = 1; y < argc; y++)
 	{
-		if (!_isdigit(*argv[y]))
+		char *num = argv[y];
+
+		while (*num)
 		{
-			printf("Error\n");
-			return (1);
+			if (!_isdigit(*num))
+			{
+				printf("Error\n");
+				return (1);
+			}
+			num++;
 		}
 
 		sum += _atoi(argv[y]);
