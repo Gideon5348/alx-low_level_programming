@@ -15,3 +15,4 @@ main:
 	add rsp, 8
 	xor eax, eax
 	ret
+format: db `Hello, Holberton\n`,0
