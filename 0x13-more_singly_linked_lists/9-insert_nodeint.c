@@ -7,7 +7,7 @@
  * @n: the data value of the new node.
  *
  * Return: the address of the new node, or NULL if it failed.
- * f it is not possible to add the new node at index idx,
+ * if it is not possible to add the new node at index idx,
  * do not add the new node and return NULL
  */
 
