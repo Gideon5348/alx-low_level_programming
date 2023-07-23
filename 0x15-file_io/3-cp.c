@@ -1,130 +1,95 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <stdarg.h>
 
 #define BUF_SIZE 1024
 
-/* Function prototypes */
-void display_usage_and_exit(const char *program_name);
-void display_read_error_and_exit(const char *file_name);
-void display_write_error_and_exit(const char *file_name);
-void display_close_error_and_exit(int fd);
+void display_error_and_exit(const char *format, ...);
 
 /**
  * main - Copies the content of a file to another file.
- * @argc: The number of arguments passed to the program.
+ * @argc: The number of arguments supplied to the program.
  * @argv: An array of pointers to the arguments.
  *
- * Return: 0 on success, otherwise exits with an error code.
+ * Return: 0 on success.
+ *
+ * Description: If the argument count is incorrect - exit code 97.
+ *              If file_from does not exist or cannot be read - exit code 98.
+ *              If file_to cannot be created or written to - exit code 99.
+ *              If file_to or file_from cannot be closed - exit code 100.
  */
 int main(int argc, char *argv[])
 {
 	int fd_from, fd_to;
 	ssize_t bytes_read, bytes_written;
 	char buffer[BUF_SIZE];
-	struct stat st;
 
 	if (argc != 3)
 	{
-		display_usage_and_exit(argv[0]);
+		display_error_and_exit("Usage: %s file_from file_to\n", argv[0]);
+		exit(97);
 	}
 
 	fd_from = open(argv[1], O_RDONLY);
 	if (fd_from == -1)
 	{
-		display_read_error_and_exit(argv[1]);
+		display_error_and_exit("Error: Can't read from file %s\n", argv[1]);
+		exit(98);
 	}
 
-	fd_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC,
-				S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	fd_to = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR
+			| S_IWUSR | S_IRGRP | S_IROTH);
 	if (fd_to == -1)
 	{
-		display_write_error_and_exit(argv[2]);
+		close(fd_from);
+		display_error_and_exit("Error: Can't write to %s\n", argv[2]);
+		exit(99);
 	}
 
-	do {
-		bytes_read = read(fd_from, buffer, BUF_SIZE);
-		if (bytes_read == -1)
+	while ((bytes_read = read(fd_from, buffer, BUF_SIZE)) > 0)
+	{
+		bytes_written = write(fd_to, buffer, bytes_read);
+		if (bytes_written == -1)
 		{
-			display_read_error_and_exit(argv[1]);
+			close(fd_from);
+			close(fd_to);
+			display_error_and_exit("Error: Can't write to %s\n", argv[2]);
+			exit(99);
 		}
-
-		if (bytes_read > 0)
-		{
-			bytes_written = write(fd_to, buffer, bytes_read);
-			if (bytes_written == -1 || bytes_written != bytes_read)
-			{
-				display_write_error_and_exit(argv[2]);
-			}
-		}
-	} while (bytes_read > 0);
-
-	if (fstat(fd_from, &st) == -1)
-	{
-		display_read_error_and_exit(argv[1]);
 	}
 
-	if (fchmod(fd_to, st.st_mode) == -1)
+	if (bytes_read == -1)
 	{
-		display_write_error_and_exit(argv[2]);
+		close(fd_from);
+		close(fd_to);
+		display_error_and_exit("Error: Can't read from file %s\n", argv[1]);
+		exit(98);
 	}
 
-	if (close(fd_from) == -1)
+	if (close(fd_from) == -1 || close(fd_to) == -1)
 	{
-		display_close_error_and_exit(fd_from);
-	}
-
-	if (close(fd_to) == -1)
-	{
-		display_close_error_and_exit(fd_to);
+		display_error_and_exit("Error: Can't close fd\n");
+		exit(100);
 	}
 
 	return (0);
 }
 
 /**
- * display_usage_and_exit - Displays usage message and exits with code 97.
- * @program_name: The name of the program.
+ * display_error_and_exit - Displays an error message to stderr and exits.
+ * @format: The format string for the error message.
+ * @...: Variable arguments for the format string.
  */
 
-void display_usage_and_exit(const char *program_name)
+void display_error_and_exit(const char *format, ...)
 {
-	dprintf(STDERR_FILENO, "Usage: %s file_from file_to\n", program_name);
-	exit(97);
-}
+	va_list args;
 
-/**
- * display_read_error_and_exit - Displays read error and exits with code 98.
- * @file_name: The name of the file that encountered the read error.
- */
-
-void display_read_error_and_exit(const char *file_name)
-{
-	dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", file_name);
-	exit(98);
-}
-
-/**
- * display_write_error_and_exit - Displays write error and exits with code 99.
- * @file_name: The name of the file that encountered the write error.
- */
-
-void display_write_error_and_exit(const char *file_name)
-{
-	dprintf(STDERR_FILENO, "Error: Can't write to %s\n", file_name);
-	exit(99);
-}
-
-/**
- * display_close_error_and_exit - Displays close error and exits with code 100.
- * @fd: The file descriptor that encountered the close error.
- */
-
-void display_close_error_and_exit(int fd)
-{
-	dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fd);
-	exit(100);
+	va_start(args, format);
+	vfprintf(stderr, format, args);
+	va_end(args);
 }
