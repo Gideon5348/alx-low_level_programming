@@ -1,3 +1,3 @@
 #!bin/bash
 gcc -shared -o libtest.so test.o
-LD_PRELOAD=/$PWD/libtest.so ./gm 9 8 10 24 75 9
+export LD_PRELOAD=./libtest.so:$LD_LIBRARY_PATH
